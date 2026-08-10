@@ -163,19 +163,18 @@
   }
 
   /* ---------- Mute / exit buttons ---------- */
-  .bottom-bar{
+  .top-bar{
     display:flex;
-    justify-content:center;
-    gap:10px;
-    padding-top:8px;
-    flex-shrink:0;
+    justify-content:space-between;
+    align-items:center;
+    padding-bottom:4px;
   }
   .mute-btn{
     background:var(--bg-panel);
     border:1px solid var(--line);
     border-radius:10px;
-    width:36px; height:32px;
-    font-size:14px;
+    width:32px; height:30px;
+    font-size:13px;
     line-height:1;
     color:var(--text-dim);
     cursor:pointer;
@@ -605,8 +604,8 @@
     .digit-box{ width:24px; height:32px; font-size:16px; }
     .keypad{ gap:6px; }
     .key{ padding:8px 0; font-size:18px; }
-    .bottom-bar{ padding-top:4px; }
-    .mute-btn{ width:30px; height:26px; }
+    .top-bar{ padding-bottom:2px; }
+    .mute-btn{ width:28px; height:26px; }
   }
   .key.zero{ grid-column: 2; }
   .key.clear{
@@ -865,17 +864,26 @@
     100%{ opacity:0; transform:translateY(-46px) scale(1.1); }
   }
 
-  .duel-lead{
+  .duel-lead-arrow{
     font-family:'Orbitron', sans-serif;
-    font-weight:700;
-    font-size:11px;
-    letter-spacing:2px;
-    min-height:14px;
+    font-weight:800;
+    font-size:10px;
+    letter-spacing:1px;
+    min-height:12px;
     color:var(--text-dim);
   }
-  .duel-lead.ahead{ color:var(--success); }
-  .duel-lead.behind{ color:var(--danger); }
-  .duel-lead.tied{ color:var(--yellow); }
+  .duel-lead-arrow.ahead{ color:var(--success); }
+  .duel-lead-arrow.behind{ color:var(--danger); }
+  .duel-lead-arrow.tied{ color:var(--yellow); }
+
+  .duel-bar.lead-ahead{
+    border-color:rgba(46,255,178,.5);
+    box-shadow:0 10px 30px rgba(0,0,0,.35), 0 0 0 1px rgba(46,255,178,.25) inset;
+  }
+  .duel-bar.lead-behind{
+    border-color:rgba(255,71,87,.5);
+    box-shadow:0 10px 30px rgba(0,0,0,.35), 0 0 0 1px rgba(255,71,87,.25) inset;
+  }
 
   .duel-outcome{
     font-family:'Orbitron', sans-serif;
@@ -971,6 +979,10 @@
 
   <!-- GAME SCREEN -->
   <section id="screen-game" class="screen hidden" style="justify-content:flex-start; padding:0; overflow:hidden;">
+    <div class="top-bar">
+      <button class="mute-btn" id="hud-mute" aria-label="Silenciar">🔊</button>
+      <button class="mute-btn" id="hud-exit" aria-label="Salir de la partida">✕</button>
+    </div>
     <div class="hud">
       <div class="stat streak">
         <div class="label">RACHA</div>
@@ -1000,6 +1012,7 @@
           <div class="duel-avatar">🧑</div>
           <div class="duel-name">TÚ</div>
           <div class="duel-score" id="duel-player-score">0</div>
+          <div class="duel-lead-arrow" id="duel-lead-arrow"></div>
         </div>
         <div class="duel-vs">
           <div class="vs-emblem">⚡VS⚡</div>
@@ -1014,7 +1027,6 @@
         <div class="duel-opp-label">EJERCICIO DEL RIVAL</div>
         <div class="duel-expr" id="duel-bot-expr"></div>
       </div>
-      <div class="duel-lead hidden" id="duel-lead"></div>
 
       <div class="combo-tag" id="combo-tag">¡RACHA x2!</div>
       <div class="card pulse" id="card">
@@ -1035,10 +1047,6 @@
         <button class="key clear" data-k="clear">BORRAR</button>
         <button class="key zero" data-k="0">0</button>
       </div>
-    </div>
-    <div class="bottom-bar">
-      <button class="mute-btn" id="hud-mute" aria-label="Silenciar">🔊</button>
-      <button class="mute-btn" id="hud-exit" aria-label="Salir de la partida">✕</button>
     </div>
   </section>
 
@@ -1249,7 +1257,7 @@
     duelOppBox: document.getElementById('duel-opp-box'),
     duelBotSide: document.getElementById('duel-bot-side'),
     vsParticles: document.getElementById('vs-particles'),
-    duelLead: document.getElementById('duel-lead'),
+    duelLeadArrow: document.getElementById('duel-lead-arrow'),
     card: document.getElementById('card'),
     expr: document.getElementById('expr'),
     answerSlot: document.getElementById('answer-slot'),
@@ -1370,7 +1378,8 @@
     musicGain: null,
     sfxGain: null,
     musicHandle: null,
-    musicStep: 0
+    musicStep: 0,
+    nextNoteTime: 0
   };
 
   function ensureAudio(){
@@ -1452,23 +1461,34 @@
   var SECTION_LEN = 8;
   var LOOPS_PER_SECTION = 8;
 
-  function musicStepFn(){
-    if(!audio.ctx || !settings.music) return;
+  function scheduleMusicStep(time){
     var sectionCycle = SECTION_LEN * LOOPS_PER_SECTION;
     var sectionIndex = Math.floor(audio.musicStep / sectionCycle) % 2;
     var pattern = sectionIndex === 0 ? musicPatternA : musicPatternB;
     var step = pattern[audio.musicStep % SECTION_LEN];
-    tone(step.b, 0.16, 'triangle', audio.musicGain, 0, sectionIndex === 0 ? 0.9 : 1.0);
-    if(step.l) tone(step.l, 0.14, 'triangle', audio.musicGain, 0.02, sectionIndex === 0 ? 0.32 : 0.4);
+    var delay = Math.max(0, time - audio.ctx.currentTime);
+    tone(step.b, 0.16, 'triangle', audio.musicGain, delay, sectionIndex === 0 ? 0.9 : 1.0);
+    if(step.l) tone(step.l, 0.14, 'triangle', audio.musicGain, delay + 0.02, sectionIndex === 0 ? 0.32 : 0.4);
     audio.musicStep++;
+  }
+  var MUSIC_STEP_SECONDS = 0.26;
+  var MUSIC_SCHEDULE_AHEAD = 0.15;
+  var MUSIC_LOOKAHEAD_MS = 30;
+  function musicSchedulerLoop(){
+    if(!audio.ctx || !settings.music) return;
+    while(audio.nextNoteTime < audio.ctx.currentTime + MUSIC_SCHEDULE_AHEAD){
+      scheduleMusicStep(audio.nextNoteTime);
+      audio.nextNoteTime += MUSIC_STEP_SECONDS;
+    }
   }
   function startMusic(){
     ensureAudio();
     if(!audio.ctx) return;
     stopMusic();
     audio.musicStep = 0;
-    musicStepFn();
-    audio.musicHandle = setInterval(musicStepFn, 260);
+    audio.nextNoteTime = audio.ctx.currentTime + 0.05;
+    musicSchedulerLoop();
+    audio.musicHandle = setInterval(musicSchedulerLoop, MUSIC_LOOKAHEAD_MS);
   }
   function stopMusic(){
     if(audio.musicHandle){ clearInterval(audio.musicHandle); audio.musicHandle = null; }
@@ -1848,7 +1868,6 @@
     el.levelPips.classList.toggle('hidden', !isMixed);
     el.duelBar.classList.toggle('hidden', !isDuel);
     el.duelOppBox.classList.toggle('hidden', !isDuel);
-    el.duelLead.classList.toggle('hidden', !isDuel);
     if(isMixed) updateLevelPips();
   }
 
@@ -1903,8 +1922,9 @@
     el.duelBotScore.textContent = 0;
     el.duelBotExpr.textContent = '';
     el.duelBotExpr.classList.remove('masked');
-    el.duelLead.textContent = '';
-    el.duelLead.className = 'duel-lead hidden';
+    el.duelLeadArrow.textContent = '';
+    el.duelLeadArrow.className = 'duel-lead-arrow';
+    el.duelBar.classList.remove('lead-ahead', 'lead-behind');
     runLevel();
   }
 
@@ -1959,16 +1979,18 @@
   function updateDuelLead(){
     if(state.versus !== 'duelo') return;
     var diff = state.score - state.botScore;
-    el.duelLead.classList.remove('hidden');
+    el.duelBar.classList.remove('lead-ahead', 'lead-behind');
     if(diff > 0){
-      el.duelLead.textContent = 'VAS GANANDO';
-      el.duelLead.className = 'duel-lead ahead';
+      el.duelLeadArrow.textContent = '▲ +' + diff;
+      el.duelLeadArrow.className = 'duel-lead-arrow ahead';
+      el.duelBar.classList.add('lead-ahead');
     } else if(diff < 0){
-      el.duelLead.textContent = 'VAS PERDIENDO';
-      el.duelLead.className = 'duel-lead behind';
+      el.duelLeadArrow.textContent = '▼ ' + diff;
+      el.duelLeadArrow.className = 'duel-lead-arrow behind';
+      el.duelBar.classList.add('lead-behind');
     } else {
-      el.duelLead.textContent = 'EMPATADOS';
-      el.duelLead.className = 'duel-lead tied';
+      el.duelLeadArrow.textContent = '= EMPATE';
+      el.duelLeadArrow.className = 'duel-lead-arrow tied';
     }
   }
 
