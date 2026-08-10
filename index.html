@@ -102,6 +102,7 @@
   /* ---------- Difficulty selector ---------- */
   .diff-select{
     display:flex;
+    flex-wrap:wrap;
     gap:8px;
     background:var(--bg-panel);
     border:1px solid var(--line);
@@ -111,7 +112,7 @@
     max-width:300px;
   }
   .diff-btn{
-    flex:1;
+    flex:1 1 26%;
     font-family:'Orbitron', sans-serif;
     font-weight:700;
     font-size:11px;
@@ -127,6 +128,16 @@
   .diff-btn.active{
     background:linear-gradient(180deg, var(--cyan), #00b3c9);
     color:#04101a;
+  }
+  .diff-btn.duel-btn.active{
+    background:linear-gradient(180deg, var(--magenta), #b3005f);
+    color:#fff;
+  }
+  .versus-select{
+    max-width:220px;
+  }
+  .versus-select .diff-btn{
+    flex:1 1 50%;
   }
 
   .diff-badge{
@@ -634,6 +645,216 @@
   .stage.shake{
     animation: shake .32s ease;
   }
+
+  /* ---------- Countdown ---------- */
+  .countdown-label{
+    font-family:'Orbitron', sans-serif;
+    font-weight:700;
+    font-size:13px;
+    letter-spacing:4px;
+    color:var(--text-dim);
+    min-height:16px;
+  }
+  .countdown-num{
+    font-family:'Orbitron', sans-serif;
+    font-weight:900;
+    font-size:110px;
+    line-height:1;
+    background:linear-gradient(180deg, #ffffff 0%, var(--cyan) 55%, var(--magenta) 120%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    text-shadow:0 0 50px rgba(0,229,255,.3);
+    animation: countPop .68s ease;
+  }
+  .countdown-num.go{
+    font-size:52px;
+    letter-spacing:3px;
+    color:var(--success);
+    -webkit-text-fill-color:var(--success);
+  }
+  @keyframes countPop{
+    0%{ transform:scale(.5); opacity:0; }
+    35%{ transform:scale(1.15); opacity:1; }
+    100%{ transform:scale(1); opacity:1; }
+  }
+
+  /* ---------- Level pips (mixed mode) ---------- */
+  .level-pips{
+    display:flex;
+    gap:6px;
+    margin-top:6px;
+  }
+  .level-pip{
+    width:26px; height:5px;
+    border-radius:4px;
+    background:var(--line);
+  }
+  .level-pip.done{ background:var(--success); }
+  .level-pip.active{ background:var(--cyan); }
+
+  /* ---------- Duel mode ---------- */
+  .duel-bar{
+    width:100%;
+    max-width:340px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:linear-gradient(180deg, var(--bg-panel-2), var(--bg-panel));
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:12px 10px;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 10px 30px rgba(0,0,0,.35);
+  }
+  .duel-side{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:2px;
+    width:34%;
+    z-index:2;
+  }
+  .duel-avatar{
+    font-size:22px;
+    line-height:1;
+    filter:drop-shadow(0 0 8px rgba(0,0,0,.4));
+  }
+  .duel-name{
+    font-family:'Rubik', sans-serif;
+    font-weight:700;
+    font-size:9px;
+    letter-spacing:1.5px;
+    color:var(--text-dim);
+  }
+  .duel-score{
+    font-family:'Orbitron', sans-serif;
+    font-weight:800;
+    font-size:22px;
+    color:var(--cyan);
+    text-shadow:0 0 14px rgba(0,229,255,.4);
+    transition: transform .1s ease;
+  }
+  .duel-side.bot .duel-score{
+    color:var(--magenta);
+    text-shadow:0 0 14px rgba(255,46,147,.4);
+  }
+  .duel-score.bump{ animation: duelBump .32s ease; }
+  @keyframes duelBump{
+    0%{ transform:scale(1); }
+    40%{ transform:scale(1.35); }
+    100%{ transform:scale(1); }
+  }
+  .duel-side.bot.miss .duel-avatar{ animation: shake .3s ease; }
+
+  .duel-opp-box{
+    width:100%;
+    max-width:340px;
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:8px 10px;
+    text-align:center;
+  }
+  .duel-opp-label{
+    font-family:'Rubik', sans-serif;
+    font-weight:700;
+    font-size:9px;
+    letter-spacing:1.5px;
+    color:var(--text-dim);
+    margin-bottom:3px;
+  }
+  .duel-expr{
+    font-family:'Orbitron', sans-serif;
+    font-weight:700;
+    font-size:15px;
+    letter-spacing:.5px;
+    color:var(--magenta);
+    min-height:18px;
+    transition: opacity .15s ease;
+  }
+  .duel-expr .op-mini{ color:var(--magenta); margin:0 3px; }
+  .duel-expr.reveal-pop{ animation: duelBump .28s ease; }
+
+  .duel-vs{
+    position:relative;
+    width:32%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:2;
+  }
+  .vs-emblem{
+    font-family:'Orbitron', sans-serif;
+    font-weight:900;
+    font-size:15px;
+    letter-spacing:1px;
+    color:var(--yellow);
+    text-shadow:0 0 12px rgba(255,201,60,.7), 0 0 26px rgba(255,46,147,.4);
+    animation: vsPulse 1.3s ease-in-out infinite;
+  }
+  @keyframes vsPulse{
+    0%,100%{ transform:scale(1) rotate(-2deg); }
+    50%{ transform:scale(1.14) rotate(2deg); }
+  }
+  .vs-particles{
+    position:absolute;
+    inset:-20px -6px;
+    pointer-events:none;
+    overflow:visible;
+    z-index:1;
+  }
+  .particle{
+    position:absolute;
+    bottom:14px;
+    width:4px; height:4px;
+    border-radius:50%;
+    background:var(--cyan);
+    opacity:0;
+    animation-name: particleFloat;
+    animation-timing-function: ease-out;
+    animation-iteration-count: infinite;
+  }
+  .particle.mag{ background:var(--magenta); }
+  .particle.yel{ background:var(--yellow); width:3px; height:3px; }
+  @keyframes particleFloat{
+    0%{ opacity:0; transform:translateY(0) scale(.6); }
+    15%{ opacity:.9; }
+    80%{ opacity:.5; }
+    100%{ opacity:0; transform:translateY(-46px) scale(1.1); }
+  }
+
+  .duel-lead{
+    font-family:'Orbitron', sans-serif;
+    font-weight:700;
+    font-size:11px;
+    letter-spacing:2px;
+    min-height:14px;
+    color:var(--text-dim);
+  }
+  .duel-lead.ahead{ color:var(--success); }
+  .duel-lead.behind{ color:var(--danger); }
+  .duel-lead.tied{ color:var(--yellow); }
+
+  .duel-outcome{
+    font-family:'Orbitron', sans-serif;
+    font-weight:900;
+    font-size:20px;
+    letter-spacing:1px;
+    line-height:1.4;
+  }
+  .duel-outcome.win{ color:var(--success); text-shadow:0 0 20px rgba(46,255,178,.5); }
+  .duel-outcome.lose{ color:var(--danger); text-shadow:0 0 20px rgba(255,71,87,.4); }
+  .duel-outcome.tie{ color:var(--yellow); text-shadow:0 0 20px rgba(255,201,60,.4); }
+  .duel-outcome .sub{
+    display:block;
+    font-family:'Rubik', sans-serif;
+    font-size:12px;
+    letter-spacing:1px;
+    color:var(--text-dim);
+    margin-top:4px;
+  }
 </style>
 </head>
 <body>
@@ -648,6 +869,12 @@
       <button class="diff-btn active" data-diff="facil">FÁCIL</button>
       <button class="diff-btn" data-diff="normal">NORMAL</button>
       <button class="diff-btn" data-diff="dificil">DIFÍCIL</button>
+      <button class="diff-btn" data-diff="mixto">MIXTO</button>
+    </div>
+
+    <div class="diff-select versus-select" id="versus-select">
+      <button class="diff-btn active" data-versus="solo">SOLO</button>
+      <button class="diff-btn duel-btn" data-versus="duelo">⚔ DUELO</button>
     </div>
 
     <div class="menu-stack">
@@ -655,14 +882,26 @@
       <button class="btn-secondary" id="btn-open-records">TABLA DE RÉCORDS</button>
       <button class="btn-secondary" id="btn-open-options">OPCIONES</button>
     </div>
-    <div class="rules">
+    <div class="rules" id="rules-text">
       Resuelve <b>tantos ejercicios como puedas</b> en 60 segundos.
     </div>
   </section>
 
+  <!-- COUNTDOWN SCREEN -->
+  <section id="screen-countdown" class="screen hidden">
+    <div class="countdown-label" id="countdown-label"></div>
+    <div class="countdown-num" id="countdown-num">3</div>
+  </section>
+
   <!-- RECORDS SCREEN -->
   <section id="screen-records" class="screen hidden">
-    <div class="panel-title">RÉCORDS<span class="sub">los 10 mejores</span></div>
+    <div class="panel-title">RÉCORDS<span class="sub" id="records-sub">los 10 mejores · FÁCIL</span></div>
+    <div class="diff-select" id="records-diff-select">
+      <button class="diff-btn active" data-diff="facil">FÁCIL</button>
+      <button class="diff-btn" data-diff="normal">NORMAL</button>
+      <button class="diff-btn" data-diff="dificil">DIFÍCIL</button>
+      <button class="diff-btn" data-diff="mixto">MIXTO</button>
+    </div>
     <div class="board" id="board-records"></div>
     <button class="btn-ghost" id="btn-records-back">‹ VOLVER</button>
   </section>
@@ -712,6 +951,34 @@
 
     <div class="stage">
       <div class="diff-badge" id="diff-badge">FÁCIL</div>
+      <div class="level-pips hidden" id="level-pips">
+        <div class="level-pip" data-pip="0"></div>
+        <div class="level-pip" data-pip="1"></div>
+        <div class="level-pip" data-pip="2"></div>
+      </div>
+
+      <div class="duel-bar hidden" id="duel-bar">
+        <div class="vs-particles" id="vs-particles"></div>
+        <div class="duel-side player">
+          <div class="duel-avatar">🧑</div>
+          <div class="duel-name">TÚ</div>
+          <div class="duel-score" id="duel-player-score">0</div>
+        </div>
+        <div class="duel-vs">
+          <div class="vs-emblem">⚡VS⚡</div>
+        </div>
+        <div class="duel-side bot" id="duel-bot-side">
+          <div class="duel-avatar">🤖</div>
+          <div class="duel-name">CPU</div>
+          <div class="duel-score" id="duel-bot-score">0</div>
+        </div>
+      </div>
+      <div class="duel-opp-box hidden" id="duel-opp-box">
+        <div class="duel-opp-label">EJERCICIO DEL RIVAL</div>
+        <div class="duel-expr" id="duel-bot-expr"></div>
+      </div>
+      <div class="duel-lead hidden" id="duel-lead"></div>
+
       <div class="combo-tag" id="combo-tag">¡RACHA x2!</div>
       <div class="card pulse" id="card">
         <div class="expr" id="expr">4 <span class="op">+</span> 7</div>
@@ -736,11 +1003,12 @@
 
   <!-- GAME OVER SCREEN -->
   <section id="screen-over" class="screen hidden">
-    <div class="result-label">TIEMPO AGOTADO</div>
+    <div class="result-label" id="result-label">TIEMPO AGOTADO</div>
     <div class="result-score" id="final-score">0</div>
     <span class="rank-chip" id="final-rank">BRONCE</span>
     <div class="result-sub">Racha máxima: <b id="final-streak">0</b></div>
     <div class="new-best hidden" id="new-best-tag">¡NUEVO RÉCORD!</div>
+    <div class="duel-outcome hidden" id="duel-outcome"></div>
 
     <div class="name-form" id="name-form">
       <input class="name-input" id="name-input" type="text" maxlength="12" placeholder="Tu apodo">
@@ -761,11 +1029,20 @@
 (function(){
   "use strict";
 
-  var GAME_SECONDS = 60;
+  var SINGLE_SECONDS = 60;
+  var MIXED_LEVEL_SECONDS = 20;
+  var MIXED_LEVELS = ['facil', 'normal', 'dificil'];
   var MAX_BOARD = 10;
+  var MODE_LABELS = { facil: 'FÁCIL', normal: 'NORMAL', dificil: 'DIFÍCIL', mixto: 'MIXTO' };
+  var BOT_ACCURACY = 0.82;
+  var BOT_DELAY_MIN = 900;
+  var BOT_DELAY_MAX = 2300;
 
   var el = {
     start: document.getElementById('screen-start'),
+    countdown: document.getElementById('screen-countdown'),
+    countdownNum: document.getElementById('countdown-num'),
+    countdownLabel: document.getElementById('countdown-label'),
     records: document.getElementById('screen-records'),
     options: document.getElementById('screen-options'),
     game: document.getElementById('screen-game'),
@@ -773,11 +1050,15 @@
 
     startBest: document.getElementById('start-best'),
     startRank: document.getElementById('start-rank'),
+    rulesText: document.getElementById('rules-text'),
     diffSelect: document.getElementById('diff-select'),
+    versusSelect: document.getElementById('versus-select'),
     btnStart: document.getElementById('btn-start'),
     btnOpenRecords: document.getElementById('btn-open-records'),
     btnOpenOptions: document.getElementById('btn-open-options'),
 
+    recordsDiffSelect: document.getElementById('records-diff-select'),
+    recordsSub: document.getElementById('records-sub'),
     boardRecords: document.getElementById('board-records'),
     btnRecordsBack: document.getElementById('btn-records-back'),
 
@@ -793,6 +1074,15 @@
     hudMute: document.getElementById('hud-mute'),
     hudExit: document.getElementById('hud-exit'),
     diffBadge: document.getElementById('diff-badge'),
+    levelPips: document.getElementById('level-pips'),
+    duelBar: document.getElementById('duel-bar'),
+    duelPlayerScore: document.getElementById('duel-player-score'),
+    duelBotScore: document.getElementById('duel-bot-score'),
+    duelBotExpr: document.getElementById('duel-bot-expr'),
+    duelOppBox: document.getElementById('duel-opp-box'),
+    duelBotSide: document.getElementById('duel-bot-side'),
+    vsParticles: document.getElementById('vs-particles'),
+    duelLead: document.getElementById('duel-lead'),
     card: document.getElementById('card'),
     expr: document.getElementById('expr'),
     answerSlot: document.getElementById('answer-slot'),
@@ -800,10 +1090,12 @@
     comboTag: document.getElementById('combo-tag'),
     stage: document.querySelector('.stage'),
 
+    resultLabel: document.getElementById('result-label'),
     finalScore: document.getElementById('final-score'),
     finalRank: document.getElementById('final-rank'),
     finalStreak: document.getElementById('final-streak'),
     newBestTag: document.getElementById('new-best-tag'),
+    duelOutcome: document.getElementById('duel-outcome'),
     nameForm: document.getElementById('name-form'),
     nameInput: document.getElementById('name-input'),
     btnSaveName: document.getElementById('btn-save-name'),
@@ -818,16 +1110,30 @@
     maxStreak: 0,
     typed: "",
     running: false,
+    inGame: false,
     timerHandle: null,
+    countdownHandle: null,
     tickStart: 0,
     lastWholeSecond: -1,
+    currentSeconds: SINGLE_SECONDS,
     difficulty: 'facil',
+    selectedMode: 'facil',
+    mode: 'single',
+    versus: 'solo',
+    selectedVersus: 'solo',
+    levelIndex: 0,
+    botScore: 0,
+    botStreak: 0,
+    botMaxStreak: 0,
+    botHandle: null,
+    duelIndex: 0,
+    botIndex: 0,
     muted: false,
     prevMusic: true,
     prevSfx: true
   };
 
-  var leaderboard = [];
+  var leaderboards = { facil: [], normal: [], dificil: [], mixto: [] };
   var settings = { music: true, sfx: true };
 
   // ===================================================================
@@ -954,6 +1260,12 @@
     tone(150, 0.12, 'sawtooth', audio.sfxGain, 0, 0.6);
   }
 
+  function playBotBlip(){
+    if(!audio.ctx) return;
+    tone(392, 0.06, 'square', audio.sfxGain, 0, 0.4);
+    tone(494, 0.08, 'square', audio.sfxGain, 0.05, 0.35);
+  }
+
   // procedural background loop — two alternating sections (verso / estribillo)
   var NOTE = {
     C3:130.81, D3:146.83, E3:164.81, F3:174.61, G3:196.00, A3:220.00, B3:246.94,
@@ -1004,13 +1316,30 @@
   // PERSISTENCE
   // ===================================================================
   async function loadData(){
+    var migrated = false;
     try{
-      var res = await window.storage.get('blitz_leaderboard');
+      var res = await window.storage.get('blitz_leaderboards');
       if(res && res.value){
         var parsed = JSON.parse(res.value);
-        if(Array.isArray(parsed)) leaderboard = parsed;
+        if(parsed && typeof parsed === 'object'){
+          ['facil','normal','dificil','mixto','duelo'].forEach(function(k){
+            if(Array.isArray(parsed[k])) leaderboards[k] = parsed[k];
+          });
+        }
+      } else {
+        // migrate old single-list save, if present
+        var old = await window.storage.get('blitz_leaderboard');
+        if(old && old.value){
+          var oldParsed = JSON.parse(old.value);
+          if(Array.isArray(oldParsed)){
+            leaderboards.facil = oldParsed;
+            migrated = true;
+          }
+        }
       }
-    }catch(e){ leaderboard = []; }
+    }catch(e){ /* defaults stay */ }
+
+    if(migrated) saveLeaderboard();
 
     try{
       var s = await window.storage.get('blitz_settings');
@@ -1028,7 +1357,7 @@
 
   async function saveLeaderboard(){
     try{
-      await window.storage.set('blitz_leaderboard', JSON.stringify(leaderboard));
+      await window.storage.set('blitz_leaderboards', JSON.stringify(leaderboards));
     }catch(e){ /* best effort */ }
   }
 
@@ -1038,25 +1367,28 @@
     }catch(e){ /* best effort */ }
   }
 
-  function bestScore(){
-    return leaderboard.length ? leaderboard[0].score : 0;
+  function bestScoreForMode(modeKey){
+    var board = leaderboards[modeKey];
+    return board && board.length ? board[0].score : 0;
   }
 
   function renderBestLine(){
-    el.startBest.textContent = bestScore();
-    applyRankChip(el.startRank, bestScore());
+    var modeKey = state.selectedMode;
+    el.startBest.textContent = bestScoreForMode(modeKey);
+    applyRankChip(el.startRank, bestScoreForMode(modeKey));
   }
 
-  function renderBoard(container, highlightIndex){
+  function renderBoard(container, highlightIndex, modeKey){
     container.innerHTML = "";
-    if(!leaderboard.length){
+    var board = leaderboards[modeKey] || [];
+    if(!board.length){
       var empty = document.createElement('div');
       empty.className = 'board-empty';
       empty.textContent = 'Todavía no hay puntajes. ¡Sé el primero!';
       container.appendChild(empty);
       return;
     }
-    leaderboard.forEach(function(entry, i){
+    board.forEach(function(entry, i){
       var rank = getRank(entry.score);
       var row = document.createElement('div');
       row.className = 'board-row' + (i === highlightIndex ? ' is-new' : '');
@@ -1077,7 +1409,18 @@
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
+  var duelQueue = [];
+  function getDuelExercise(index){
+    while(duelQueue.length <= index){
+      duelQueue.push(DIFFICULTIES[state.difficulty].gen());
+    }
+    return duelQueue[index];
+  }
+
   function makeExercise(){
+    if(state.versus === 'duelo'){
+      return getDuelExercise(state.duelIndex);
+    }
     return DIFFICULTIES[state.difficulty].gen();
   }
 
@@ -1136,6 +1479,14 @@
     el.hudStreak.textContent = state.streak;
     flashScorePop(points);
     showCombo();
+
+    if(state.versus === 'duelo'){
+      el.duelPlayerScore.textContent = state.score;
+      bumpScoreEl(el.duelPlayerScore);
+      state.duelIndex += 1;
+      updateDuelLead();
+      updateBotExerciseDisplay();
+    }
 
     el.card.classList.remove('pulse');
     el.card.classList.add('correct');
@@ -1213,18 +1564,19 @@
     return m + ':' + (r < 10 ? '0' : '') + r;
   }
 
-  function startTimer(){
+  function startTimer(seconds){
+    state.currentSeconds = seconds;
     el.timerBar.style.width = '100%';
     el.timerBar.style.background = 'linear-gradient(90deg, var(--cyan), var(--success))';
     el.clock.classList.remove('urgent');
-    el.clockText.textContent = formatClock(GAME_SECONDS);
+    el.clockText.textContent = formatClock(seconds);
     state.tickStart = Date.now();
-    state.lastWholeSecond = GAME_SECONDS;
+    state.lastWholeSecond = seconds;
 
     state.timerHandle = setInterval(function(){
       var elapsed = (Date.now() - state.tickStart) / 1000;
-      var left = Math.max(0, GAME_SECONDS - elapsed);
-      var pct = (left / GAME_SECONDS) * 100;
+      var left = Math.max(0, state.currentSeconds - elapsed);
+      var pct = (left / state.currentSeconds) * 100;
       el.timerBar.style.width = pct + '%';
       el.clockText.textContent = formatClock(left);
 
@@ -1244,7 +1596,7 @@
       }
 
       if(left <= 0){
-        endGame();
+        onTimerEnd();
       }
     }, 100);
   }
@@ -1265,37 +1617,265 @@
     target.classList.remove('hidden');
   }
   document.addEventListener('DOMContentLoaded', function(){});
-  allScreens = [el.start, el.records, el.options, el.game, el.over];
+  allScreens = [el.start, el.countdown, el.records, el.options, el.game, el.over];
 
-  function startGame(){
+  // ===================================================================
+  // COUNTDOWN
+  // ===================================================================
+  function runCountdown(label, callback){
+    showScreen(el.countdown);
+    el.countdownLabel.textContent = label || '';
+    var n = 3;
+
+    function renderNum(){
+      el.countdownNum.classList.remove('go');
+      el.countdownNum.style.animation = 'none';
+      void el.countdownNum.offsetWidth; // restart animation
+      el.countdownNum.style.animation = '';
+      el.countdownNum.textContent = n;
+    }
+
+    renderNum();
+    playTick(true);
+
+    state.countdownHandle = setInterval(function(){
+      n--;
+      if(n > 0){
+        renderNum();
+        playTick(true);
+      } else {
+        clearInterval(state.countdownHandle);
+        state.countdownHandle = null;
+        el.countdownNum.classList.add('go');
+        el.countdownNum.style.animation = 'none';
+        void el.countdownNum.offsetWidth;
+        el.countdownNum.style.animation = '';
+        el.countdownNum.textContent = '¡YA!';
+        playCorrect();
+        setTimeout(callback, 380);
+      }
+    }, 700);
+  }
+
+  // ===================================================================
+  // GAME FLOW (single + mixed modes)
+  // ===================================================================
+  function updateLevelPips(){
+    Array.prototype.forEach.call(el.levelPips.querySelectorAll('.level-pip'), function(pip){
+      var idx = Number(pip.getAttribute('data-pip'));
+      pip.classList.toggle('done', idx < state.levelIndex);
+      pip.classList.toggle('active', idx === state.levelIndex);
+    });
+  }
+
+  function updateModeUI(){
+    var isMixed = state.mode === 'mixto';
+    var isDuel = state.versus === 'duelo';
+    el.levelPips.classList.toggle('hidden', !isMixed);
+    el.duelBar.classList.toggle('hidden', !isDuel);
+    el.duelOppBox.classList.toggle('hidden', !isDuel);
+    el.duelLead.classList.toggle('hidden', !isDuel);
+    if(isMixed) updateLevelPips();
+  }
+
+  function runLevel(){
+    if(state.mode === 'mixto'){
+      state.difficulty = MIXED_LEVELS[state.levelIndex];
+    } else {
+      state.difficulty = state.mode;
+    }
+    var seconds = (state.mode === 'mixto') ? MIXED_LEVEL_SECONDS : SINGLE_SECONDS;
+    var label = (state.mode === 'mixto') ? ('NIVEL ' + (state.levelIndex + 1) + '/3') : '';
+    if(state.versus === 'duelo') label = label ? (label + ' · ⚔ DUELO') : '⚔ DUELO';
+
+    runCountdown(label, function(){
+      showScreen(el.game);
+      el.diffBadge.textContent = DIFFICULTIES[state.difficulty].label;
+      updateModeUI();
+      el.card.classList.add('pulse');
+      renderExercise();
+      state.running = true;
+      renderExerciseHud();
+      startTimer(seconds);
+      startMusic();
+      if(state.versus === 'duelo') startBotDuel();
+    });
+  }
+
+  function renderExerciseHud(){
+    el.hudScore.textContent = state.score;
+    el.hudStreak.textContent = state.streak;
+  }
+
+  function beginGameFlow(mode){
     resumeAudio();
+    state.mode = mode;
+    state.versus = state.selectedVersus;
+    state.levelIndex = 0;
     state.score = 0;
     state.streak = 0;
     state.maxStreak = 0;
     state.typed = "";
-    state.running = true;
+    state.botScore = 0;
+    state.botStreak = 0;
+    state.botMaxStreak = 0;
+    state.duelIndex = 0;
+    state.botIndex = 0;
+    duelQueue = [];
+    state.inGame = true;
     el.hudScore.textContent = 0;
     el.hudStreak.textContent = 0;
-    el.diffBadge.textContent = DIFFICULTIES[state.difficulty].label;
-    el.card.classList.add('pulse');
-    showScreen(el.game);
-    renderExercise();
-    startTimer();
-    startMusic();
+    el.duelPlayerScore.textContent = 0;
+    el.duelBotScore.textContent = 0;
+    el.duelBotExpr.textContent = '';
+    el.duelBotExpr.classList.remove('masked');
+    el.duelLead.textContent = '';
+    el.duelLead.className = 'duel-lead hidden';
+    runLevel();
+  }
+
+  function onTimerEnd(){
+    state.running = false;
+    stopTimer();
+    stopBotDuel();
+    if(state.mode === 'mixto' && state.levelIndex < MIXED_LEVELS.length - 1){
+      state.levelIndex++;
+      runLevel();
+    } else {
+      endGame();
+    }
+  }
+
+  // ===================================================================
+  // DUEL MODE — simulated live opponent (CPU)
+  // ===================================================================
+  function spawnDuelParticles(){
+    el.vsParticles.innerHTML = "";
+    var colors = ['', 'mag', 'yel'];
+    for(var i = 0; i < 9; i++){
+      var p = document.createElement('span');
+      p.className = 'particle ' + colors[i % colors.length];
+      p.style.left = (8 + Math.random() * 84) + '%';
+      var dur = 1.6 + Math.random() * 1.4;
+      p.style.animationDuration = dur + 's';
+      p.style.animationDelay = (Math.random() * dur) + 's';
+      el.vsParticles.appendChild(p);
+    }
+  }
+
+  function bumpScoreEl(node){
+    node.classList.remove('bump');
+    void node.offsetWidth;
+    node.classList.add('bump');
+  }
+
+  function formatDuelExprSmall(text){
+    return text.replace(/([+\-×÷])/, '<span class="op-mini">$1</span>');
+  }
+
+  function updateBotExerciseDisplay(){
+    if(state.versus !== 'duelo') return;
+    var ex = getDuelExercise(state.botIndex);
+    el.duelBotExpr.innerHTML = formatDuelExprSmall(ex.text);
+    el.duelBotExpr.classList.remove('reveal-pop');
+    void el.duelBotExpr.offsetWidth;
+    el.duelBotExpr.classList.add('reveal-pop');
+  }
+
+  function updateDuelLead(){
+    if(state.versus !== 'duelo') return;
+    var diff = state.score - state.botScore;
+    el.duelLead.classList.remove('hidden');
+    if(diff > 0){
+      el.duelLead.textContent = 'VAS GANANDO';
+      el.duelLead.className = 'duel-lead ahead';
+    } else if(diff < 0){
+      el.duelLead.textContent = 'VAS PERDIENDO';
+      el.duelLead.className = 'duel-lead behind';
+    } else {
+      el.duelLead.textContent = 'EMPATADOS';
+      el.duelLead.className = 'duel-lead tied';
+    }
+  }
+
+  function startBotDuel(){
+    el.duelBotSide.classList.remove('miss');
+    spawnDuelParticles();
+    updateDuelLead();
+    updateBotExerciseDisplay();
+    scheduleBotAnswer();
+  }
+
+  function scheduleBotAnswer(){
+    var delay = randInt(BOT_DELAY_MIN, BOT_DELAY_MAX);
+    state.botHandle = setTimeout(function(){
+      if(!state.running || state.versus !== 'duelo') return;
+      var correct = Math.random() < BOT_ACCURACY;
+      if(correct){
+        state.botStreak += 1;
+        if(state.botStreak > state.botMaxStreak) state.botMaxStreak = state.botStreak;
+        var bonus = Math.min(state.botStreak * 2, 20);
+        var points = Math.round((10 + bonus) * DIFFICULTIES[state.difficulty].multiplier);
+        state.botScore += points;
+        state.botIndex += 1;
+        el.duelBotScore.textContent = state.botScore;
+        bumpScoreEl(el.duelBotScore);
+        updateBotExerciseDisplay();
+        playBotBlip();
+      } else {
+        state.botStreak = 0;
+        el.duelBotSide.classList.add('miss');
+        setTimeout(function(){ el.duelBotSide.classList.remove('miss'); }, 320);
+      }
+      updateDuelLead();
+      scheduleBotAnswer();
+    }, delay);
+  }
+
+  function stopBotDuel(){
+    if(state.botHandle){
+      clearTimeout(state.botHandle);
+      state.botHandle = null;
+    }
   }
 
   var pendingEntryIndex = -1;
 
   async function endGame(){
     state.running = false;
+    state.inGame = false;
     stopTimer();
+    stopBotDuel();
     stopMusic();
+
+    var modeKey = state.mode;
+    var board = leaderboards[modeKey];
+
+    var isDuel = state.versus === 'duelo';
+    el.resultLabel.textContent = isDuel ? 'DUELO TERMINADO' : (modeKey === 'mixto' ? 'MODO MIXTO COMPLETADO' : 'TIEMPO AGOTADO');
     el.finalScore.textContent = state.score;
     el.finalStreak.textContent = state.maxStreak;
     applyRankChip(el.finalRank, state.score);
 
-    var qualifies = leaderboard.length < MAX_BOARD || state.score > leaderboard[leaderboard.length-1].score;
-    var isTopScore = state.score > bestScore();
+    if(isDuel){
+      el.duelOutcome.classList.remove('hidden');
+      var subLine = '<span class="sub">TÚ ' + state.score + ' — ' + state.botScore + ' CPU</span>';
+      if(state.score > state.botScore){
+        el.duelOutcome.className = 'duel-outcome win';
+        el.duelOutcome.innerHTML = '¡GANASTE EL DUELO! 🏆' + subLine;
+      } else if(state.score < state.botScore){
+        el.duelOutcome.className = 'duel-outcome lose';
+        el.duelOutcome.innerHTML = 'PERDISTE EL DUELO 😅' + subLine;
+      } else {
+        el.duelOutcome.className = 'duel-outcome tie';
+        el.duelOutcome.innerHTML = 'EMPATE 🤝' + subLine;
+      }
+    } else {
+      el.duelOutcome.classList.add('hidden');
+    }
+
+    var qualifies = board.length < MAX_BOARD || state.score > board[board.length-1].score;
+    var isTopScore = state.score > bestScoreForMode(modeKey);
     el.newBestTag.classList.toggle('hidden', !isTopScore);
 
     if(qualifies && state.score > 0){
@@ -1306,7 +1886,7 @@
     } else {
       el.nameForm.classList.add('hidden');
       el.boardOver.classList.remove('hidden');
-      renderBoard(el.boardOver, -1);
+      renderBoard(el.boardOver, -1, modeKey);
     }
 
     showScreen(el.over);
@@ -1317,17 +1897,20 @@
     if(!name) name = "JUGADOR";
     name = name.toUpperCase().slice(0, 12);
 
-    leaderboard.push({ name: name, score: state.score });
-    leaderboard.sort(function(a,b){ return b.score - a.score; });
-    leaderboard = leaderboard.slice(0, MAX_BOARD);
-    pendingEntryIndex = leaderboard.findIndex(function(e){ return e.name === name && e.score === state.score; });
+    var modeKey = state.mode;
+    var board = leaderboards[modeKey];
+    board.push({ name: name, score: state.score });
+    board.sort(function(a,b){ return b.score - a.score; });
+    board = board.slice(0, MAX_BOARD);
+    leaderboards[modeKey] = board;
+    pendingEntryIndex = board.findIndex(function(e){ return e.name === name && e.score === state.score; });
 
     await saveLeaderboard();
     renderBestLine();
 
     el.nameForm.classList.add('hidden');
     el.boardOver.classList.remove('hidden');
-    renderBoard(el.boardOver, pendingEntryIndex);
+    renderBoard(el.boardOver, pendingEntryIndex, modeKey);
   }
 
   el.btnSaveName.addEventListener('click', commitScore);
@@ -1335,8 +1918,8 @@
     if(e.key === 'Enter') commitScore();
   });
 
-  el.btnStart.addEventListener('click', startGame);
-  el.btnAgain.addEventListener('click', startGame);
+  el.btnStart.addEventListener('click', function(){ beginGameFlow(state.selectedMode); });
+  el.btnAgain.addEventListener('click', function(){ beginGameFlow(state.mode); });
   el.btnToMenu.addEventListener('click', function(){
     renderBestLine();
     showScreen(el.start);
@@ -1344,7 +1927,12 @@
 
   el.btnOpenRecords.addEventListener('click', function(){
     resumeAudio();
-    renderBoard(el.boardRecords, -1);
+    var mode = state.selectedMode;
+    Array.prototype.forEach.call(el.recordsDiffSelect.querySelectorAll('.diff-btn'), function(b){
+      b.classList.toggle('active', b.getAttribute('data-diff') === mode);
+    });
+    el.recordsSub.textContent = 'los 10 mejores · ' + MODE_LABELS[mode];
+    renderBoard(el.boardRecords, -1, mode);
     showScreen(el.records);
   });
   el.btnRecordsBack.addEventListener('click', function(){ showScreen(el.start); });
@@ -1371,13 +1959,47 @@
     syncMuteIcon();
   });
 
+  function updateRulesText(){
+    var mode = state.selectedMode;
+    var base = (mode === 'mixto')
+      ? 'Recorre los <b>3 niveles</b> (fácil → normal → difícil), 20s cada uno, y suma <b>un puntaje total</b>.'
+      : 'Resuelve <b>tantos ejercicios como puedas</b> en 60 segundos.';
+    if(state.selectedVersus === 'duelo'){
+      base += ' Competí <b>en tiempo real</b> contra un rival simulado (CPU). ¡El que más puntos sume gana el duelo!';
+    }
+    el.rulesText.innerHTML = base;
+  }
+
   el.diffSelect.addEventListener('click', function(e){
     var btn = e.target.closest('.diff-btn');
     if(!btn) return;
-    state.difficulty = btn.getAttribute('data-diff');
+    state.selectedMode = btn.getAttribute('data-diff');
     Array.prototype.forEach.call(el.diffSelect.querySelectorAll('.diff-btn'), function(b){
       b.classList.toggle('active', b === btn);
     });
+    updateRulesText();
+    renderBestLine();
+  });
+
+  el.versusSelect.addEventListener('click', function(e){
+    var btn = e.target.closest('.diff-btn');
+    if(!btn) return;
+    state.selectedVersus = btn.getAttribute('data-versus');
+    Array.prototype.forEach.call(el.versusSelect.querySelectorAll('.diff-btn'), function(b){
+      b.classList.toggle('active', b === btn);
+    });
+    updateRulesText();
+  });
+
+  el.recordsDiffSelect.addEventListener('click', function(e){
+    var btn = e.target.closest('.diff-btn');
+    if(!btn) return;
+    var mode = btn.getAttribute('data-diff');
+    Array.prototype.forEach.call(el.recordsDiffSelect.querySelectorAll('.diff-btn'), function(b){
+      b.classList.toggle('active', b === btn);
+    });
+    el.recordsSub.textContent = 'los 10 mejores · ' + MODE_LABELS[mode];
+    renderBoard(el.boardRecords, -1, mode);
   });
 
   function syncMuteIcon(){
@@ -1406,11 +2028,17 @@
   });
 
   el.hudExit.addEventListener('click', function(){
-    if(!state.running) return;
+    if(!state.inGame) return;
     var ok = window.confirm('¿Salir de la partida? Perderás el progreso de esta ronda.');
     if(!ok) return;
     state.running = false;
+    state.inGame = false;
+    if(state.countdownHandle){
+      clearInterval(state.countdownHandle);
+      state.countdownHandle = null;
+    }
     stopTimer();
+    stopBotDuel();
     stopMusic();
     renderBestLine();
     showScreen(el.start);
